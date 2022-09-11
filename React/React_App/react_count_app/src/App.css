@@ -1,10 +1,37 @@
 .App {
+  display: flex;
+  align-items: center;
+  height: 100vh;
   text-align: center;
+  background: radial-gradient(skyblue, transparent);
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.Box {
+  margin: 0 auto;
+}
+
+.Box p {
+  font-size: 24px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-weight: bold;
+}
+
+.Box button {
+  margin: 0 10px;
+  padding: 5px;
+  background-color: aqua;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.Box button:hover {
+  opacity: 0.7;
 }
 
 @media (prefers-reduced-motion: no-preference) {
