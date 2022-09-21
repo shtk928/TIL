@@ -1,27 +1,10 @@
-import HomeStyles from '../styles/Home.module.css'
-
-import React, { useEffect, useState } from 'react'
+import Link from 'next/link';
+import React, { useEffect } from 'react'
+import { useRecoilState } from 'recoil';
+import { todosState } from '../components/atoms';
 
 const Home = () => {
-  const [todo, setTodo] = useState({title: '', status: ''});
-  const [todos, setTodos] = useState([]);
-
-  const createTodo = () => {
-    const array = todos;
-    const newArray = ([...array, todo])
-    setTodos(newArray);
-    setTodo({title: '', status: ''});
-  }
-
-  // title 更新
-  const updateTodoTitle = (e) => {
-    setTodo({...todo, title: e.target.value});
-  }
-
-  // status 更新
-  const updateTodoStatus = (e) => {
-    setTodo({...todo, status: e.target.value});
-  }
+  const [todos, setTodos] = useRecoilState(todosState);
 
   // todo 削除
   const onClickDelete = (index) => {
@@ -29,11 +12,7 @@ const Home = () => {
     newArray.splice(index, 1);
     setTodos(newArray);
   }
-
-  // todo 監視
-  useEffect(() => {
-    console.log(todo)
-  }, [todo])
+  // filter メソッドで削除 実装
 
   // todos 監視
   useEffect(() => {
@@ -42,28 +21,18 @@ const Home = () => {
 
   return (
     <>
+      <Link href='/create'><button>作成する</button></Link>
       <div>
         <div>
-          {todos.map((todo, index) => (
-            <ul key={index}>
-              <li>タイトル：{todo.title}</li>
+          {todos?.map((todo, index) => (
+            <ul key={todo.id}>
+              <li>タイトル：<Link href={`/${todo.id}`}>{todo.title}</Link></li>
               <li>進捗：{todo.status}</li>
-              <button>編集</button>
+              <Link href='/edit'><button index='1'>編集</button></Link>
               <button onClick={() => onClickDelete(index)}>削除</button>
             </ul>
           ))}
         </div>
-
-        <form>
-          <input type='text' value={todo.title} onChange={updateTodoTitle} />
-          <select value={todo.status} onChange={updateTodoStatus}>
-            <option value=''>進捗を選択</option>
-            <option value='未着手'>未着手</option>
-            <option value='着手中'>着手中</option>
-            <option value='完了'>完了</option>
-          </select>
-          <button type='button' onClick={createTodo}>作成</button>
-        </form>
       </div>
     </>
   )
