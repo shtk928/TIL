@@ -6,18 +6,24 @@ import { todosState } from '../components/atoms';
 const Home = () => {
   const [todos, setTodos] = useRecoilState(todosState);
 
-  // todo 削除
-  const onClickDelete = (index) => {
-    const newArray = [...todos];
-    newArray.splice(index, 1);
-    setTodos(newArray);
+  // splice メソッドで削除
+  // const onClickDelete1 = (index) => {
+  //   const newArray = [...todos];
+  //   newArray.splice(index, 1);
+  //   setTodos(newArray);
+  // }
+  
+  // filter メソッドで削除
+  const onClickDelete2 = (foundTodo) => {
+    const newArray = todos.filter((todo) => {
+      return todo.id !== foundTodo.id
+    })
+    setTodos(newArray)
   }
-  // filter メソッドで削除 実装
 
-  // todos 監視
-  useEffect(() => {
-    console.log(todos)
-  }, [todos])
+  // useEffect(() => {
+  //   console.log(todos)
+  // }, [todos])
 
   return (
     <>
@@ -28,8 +34,11 @@ const Home = () => {
             <ul key={todo.id}>
               <li>タイトル：<Link href={`/${todo.id}`}>{todo.title}</Link></li>
               <li>進捗：{todo.status}</li>
-              <Link href='/edit'><button index='1'>編集</button></Link>
-              <button onClick={() => onClickDelete(index)}>削除</button>
+              <Link href={`/${todo.id}/edit`}><button>編集</button></Link>
+              {/* spliceメソッド使用 */}
+              {/* <button onClick={() => onClickDelete(index)}>削除</button> */}
+              {/* filterメソッド使用 */}
+              <button onClick={() => onClickDelete2(todo)}>削除</button>
             </ul>
           ))}
         </div>
