@@ -36,6 +36,7 @@ const Edit = () => {
         <form>
           <label>title</label>
           <input type='text' value={editTodo[0]?.title} onChange={(e) => handleEditTitle(e.target.value)} />
+          <button type='button'>{editTodo[0]?.isComplete ? '完了' : '未完了'}</button>
           <button type='button'>編集完了</button>
           <button type='button'>キャンセル</button>
         </form>
