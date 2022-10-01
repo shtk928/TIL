@@ -2,21 +2,39 @@ import Link from 'next/link';
 import { useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 import { todosState } from '../components/atoms'
+import db from '../src/firebase';
+import { addDoc, collection, getDocs, serverTimestamp} from 'firebase/firestore'
 
 const Create = () => {
   const [title, setTitle] = useState('');
   const setTodos = useSetRecoilState(todosState)
 
+  // const createTodo = () => {
+  //   setTodos((oldTodos) => [
+  //     ...oldTodos,
+  //     {
+  //       id: getId(),
+  //       title: title,
+  //       isComplete: false
+  //     }
+  //   ]);
+  //   setTitle('');
+  // }
+
+  // const createTodo = () => {
+  //   const todoData = collection(db, 'todos');
+  //   setDoc(todoData, {
+  //     id: getId(),
+  //     title: title,
+  //   });
+  //   setTitle('');
+  // }
+
   const createTodo = () => {
-    setTodos((oldTodos) => [
-      ...oldTodos,
-      {
-        id: getId(),
-        title: title,
-        isComplete: false
-      }
-    ]);
-    setTitle('');
+    addDoc(collection(db, "todos"), {
+      title: title,
+      timestamp: serverTimestamp()
+    });
   }
 
   const updateTodoTitle = (e) => {

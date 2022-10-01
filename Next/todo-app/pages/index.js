@@ -1,10 +1,26 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import { todosState } from '../components/atoms';
+import db from '../src/firebase';
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 
 const Home = () => {
-  const [todos, setTodos] = useRecoilState(todosState);
+  // const [todos, setTodos] = useRecoilState(todosState);
+  const [todos, setTodos] = useState([])
+
+  // useEffectを使用 リロード時に、一度だけデータを取得
+  useEffect(() => {
+    const todoData = collection(db, 'todos');
+    getDocs(todoData).then((snapShot) => {
+      setTodos(snapShot.docs.map((doc) =>  ({ ...doc.data() })));
+    });
+
+    // リアルタイムでデータを取得
+    onSnapshot(todoData, (todo) => {
+      setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+    });
+  }, []);
 
   // splice メソッドで削除
   // const onClickDelete1 = (index) => {
@@ -21,9 +37,9 @@ const Home = () => {
     setTodos(newArray)
   }
 
-  // useEffect(() => {
-  //   console.log(todos)
-  // }, [todos])
+  useEffect(() => {
+    console.log(todos);
+  }, [todos]);
 
   return (
     <>
