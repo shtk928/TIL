@@ -1,50 +1,30 @@
 import Link from 'next/link';
-import { useState } from 'react'
-import { useSetRecoilState } from 'recoil'
-import { todosState } from '../components/atoms'
+import { useState } from 'react';
 import db from '../src/firebase';
-import { addDoc, collection, getDocs, serverTimestamp} from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const Create = () => {
   const [title, setTitle] = useState('');
-  const setTodos = useSetRecoilState(todosState)
 
-  // const createTodo = () => {
-  //   setTodos((oldTodos) => [
-  //     ...oldTodos,
-  //     {
-  //       id: getId(),
-  //       title: title,
-  //       isComplete: false
-  //     }
-  //   ]);
-  //   setTitle('');
-  // }
-
-  // const createTodo = () => {
-  //   const todoData = collection(db, 'todos');
-  //   setDoc(todoData, {
-  //     id: getId(),
-  //     title: title,
-  //   });
-  //   setTitle('');
-  // }
-
-  const createTodo = () => {
-    addDoc(collection(db, "todos"), {
+  // async await による非同期処理で firestore でドキュメントが自動生成されるまで待ち、自動生成された後にドキュメントを取得
+  const createTodo = async () => {
+    const ref = await addDoc(collection(db, 'todos'), {
       title: title,
+      status: false,
       timestamp: serverTimestamp()
     });
+    console.log(ref.id)
+    setTitle('');
   }
 
-  const updateTodoTitle = (e) => {
+  const handleTodoTitle = (e) => {
     setTitle(e.target.value);
   }
   
   return (
     <>
       <form>
-        <input type='text' value={title} onChange={updateTodoTitle} />
+        <input type='text' value={title} onChange={handleTodoTitle} />
         <button type='button' onClick={createTodo}>作成</button>
       </form>
       <Link href='/'><button>Home Back</button></Link>
@@ -53,9 +33,3 @@ const Create = () => {
 }
 
 export default Create
-
-// 一意のid
-let id = 1;
-const getId = () => {
-  return id++;
-}

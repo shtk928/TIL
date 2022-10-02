@@ -1,62 +1,48 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil';
-import { todosState } from '../components/atoms';
 import db from '../src/firebase';
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot } from "firebase/firestore";
 
 const Home = () => {
-  // const [todos, setTodos] = useRecoilState(todosState);
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
 
   // useEffectを使用 リロード時に、一度だけデータを取得
   useEffect(() => {
     const todoData = collection(db, 'todos');
     getDocs(todoData).then((snapShot) => {
-      setTodos(snapShot.docs.map((doc) =>  ({ ...doc.data() })));
+      setTodos(snapShot.docs);
     });
-
-    // リアルタイムでデータを取得
+    
+    // リアルタイムでデータを取得・監視
     onSnapshot(todoData, (todo) => {
-      setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+      setTodos(todo.docs);
     });
   }, []);
 
-  // splice メソッドで削除
-  // const onClickDelete1 = (index) => {
-  //   const newArray = [...todos];
-  //   newArray.splice(index, 1);
-  //   setTodos(newArray);
-  // }
-  
-  // filter メソッドで削除
-  const onClickDelete2 = (foundTodo) => {
-    const newArray = todos.filter((todo) => {
-      return todo.id !== foundTodo.id
-    })
-    setTodos(newArray)
+  const onClickEdit = (editTodo) => {
+    setIsEdit(true);
   }
 
-  useEffect(() => {
-    console.log(todos);
-  }, [todos]);
+  const onClickDelete = async (deleteTodo) => {
+    await deleteDoc(doc(db, 'todos', `${deleteTodo.id}`));
+  }
 
   return (
     <>
       <Link href='/create'><button>作成する</button></Link>
       <div>
         <div>
-          {todos?.map((todo, index) => (
-            <ul key={todo.id}>
-              <li>タイトル：<Link href={`/${todo.id}`}>{todo.title}</Link></li>
-              <li>進捗：{todo.status}</li>
-              <Link href={`/${todo.id}/edit`}><button>編集</button></Link>
-              {/* spliceメソッド使用 */}
-              {/* <button onClick={() => onClickDelete(index)}>削除</button> */}
-              {/* filterメソッド使用 */}
-              <button onClick={() => onClickDelete2(todo)}>削除</button>
-            </ul>
-          ))}
+          {todos?.map((todo) => {
+            return (
+              <ul key={todo.id}>
+                <li>title : {todo.data().title}</li>
+                <li>status : {todo.data().status ? '完了' : '未完了'}</li>
+                <button type='button'>編集</button>
+                <button type='button' onClick={() => onClickDelete(todo)}>削除</button>
+              </ul>
+            )
+          })}
         </div>
       </div>
     </>
