@@ -246,6 +246,32 @@ type User1 = typeof user
 
 // 31
 const user2 = { id: 3, name: 'bob' }
-type UserKey = keyof typeof user2
+type UserKey1 = keyof typeof user2
 
 // 32
+const user3 = { id: 3, name: 'bob' } as const
+type UserKey2 = keyof typeof user3
+type UserValue = typeof user[UserKey2]
+
+// 33
+const fruits2 = ['apple', 'orange', 'lemon'] as const
+type FruitsType = typeof fruits2[number]
+
+// 34 never型の活用１ 途中
+type CurriculumLanguage = "JavaScript" | "TypeScript" | "React" | "Go";
+
+const printLearningLanguage = (lang: CurriculumLanguage) => {
+switch (lang) {
+    case "JavaScript":
+      console.log(`I'm learnig ${lang}`);
+      break;
+    case "TypeScript":
+      console.log(`I'm learnig ${lang}`);
+      break;
+    case "React":
+      console.log(`I'm learnig ${lang}`);
+      break;
+    default:
+        throw new Error(`${lang}はカリキュラムにない言語です`);
+  }
+}
