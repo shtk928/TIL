@@ -15,7 +15,38 @@ a {
   box-sizing: border-box;
 }
 
+.places-container {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 500px;
+}
+
 .map-container {
   height: 100vh;
   width: 100%;
+}
+
+.combobox-input {
+  width: 100%;
+  padding: 8px;
+}
+
+.combobox-list {
+  list-style: none;
+}
+
+.combobox-option {
+  background-color: #fff;
+  left: 50%;
+  transform: translateX(-8%);
+  width: 500px;
+  padding: 12px;
+}
+
+.combobox-option:hover {
+  background-color: #ffffffd0;
+  cursor: pointer;
 }
